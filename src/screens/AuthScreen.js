@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import AsteroidInfoScreen from './AsteroidInfoScreen';
 
@@ -7,6 +7,7 @@ const AuthScreen = ({ navigation }) => {
     const [enableButton, setEnableButton] = useState(true);
     const [asteriudId, setAsteroidID] = useState('');
     const [asteriuds, setAsteriuds] = useState([]);
+    const [showActivityIndicator, setShowActivityIndicator] = useState(false);
 
     let API_KEY = 'lVKFm84J8fxPAAX8l5Q9XWHj9axo0cuEkZpNOa7e';
 
@@ -20,6 +21,7 @@ const AuthScreen = ({ navigation }) => {
     }
 
     randomAsteroidHandler = () => {
+        setShowActivityIndicator(true);
         getAsteroidInformation()
     }
 
@@ -37,6 +39,7 @@ const AuthScreen = ({ navigation }) => {
                 axios.get(`https://api.nasa.gov/neo/rest/v1/neo/${randomAsteroidId}?api_key=${API_KEY}`)
                     .then(details => {
                         console.log('Details: ', details);
+                        setShowActivityIndicator(false);
                         navigation.navigate('AsteroidInfoScreen', {
                             name: details.data.name,
                             nasa_jpl_url: details.data.nasa_jpl_url,
@@ -46,8 +49,11 @@ const AuthScreen = ({ navigation }) => {
             });
     }
 
+    // const loader = 
+
     return (
         <View style={styles.containerStyle}>
+
             <TextInput style={styles.textInputStyle}
                 placeholder={'Enter Asteroid ID'}
                 onChangeText={textChangeHandler}></TextInput>
@@ -60,6 +66,8 @@ const AuthScreen = ({ navigation }) => {
                 <Text style={styles.textStyles}
                     onPress={randomAsteroidHandler}>Random Asteroid</Text>
             </TouchableOpacity>
+
+            {showActivityIndicator ? <ActivityIndicator style={styles.activityIndicator} size="large" color="#0000ff" /> : null}
         </View>
     )
 }
@@ -88,6 +96,12 @@ const styles = StyleSheet.create({
     textStyles: {
         color: 'white',
         fontSize: 18
+    },
+    activityIndicator: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 80
     }
 });
 
