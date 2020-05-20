@@ -49,7 +49,6 @@ const AuthScreen = ({ navigation }) => {
             });
     }
 
-    // const loader = 
 
     return (
         <View style={styles.containerStyle}>
